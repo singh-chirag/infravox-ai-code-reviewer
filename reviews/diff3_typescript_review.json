@@ -1,0 +1,210 @@
+{
+  "review_id": "cb610aad",
+  "pr_summary": "PR adds changes in typescript \u2014 Add order cancellation and status polling",
+  "verdict": "request_changes",
+  "verdict_reason": "17 issues found, overall severity: high",
+  "overall_severity": "high",
+  "findings": [
+    {
+      "id": "F-001",
+      "title": "Missing Input Validation",
+      "severity": "high",
+      "line_content": "const order = await orderRepo.findById(orderId);",
+      "suggestion": "Add input validation to ensure orderId is a valid and authorized order ID, e.g., `if (!isValidOrderId(orderId)) { throw new Error('Invalid order ID'); }`",
+      "category": "security",
+      "description": "The orderId parameter is not validated, which could lead to potential IDOR (Insecure Direct Object Reference) vulnerabilities if an attacker can manipulate the orderId.",
+      "recommendation": null,
+      "line": 5
+    },
+    {
+      "id": "F-002",
+      "title": "Missing Authorization Check",
+      "severity": "medium",
+      "line_content": "order.cancelledAt = new Date();",
+      "suggestion": "Add an authorization check to ensure the user is the owner of the order or has the necessary permissions, e.g., `if (order.userId !== userId) { throw new Error('Unauthorized'); }`",
+      "category": "security",
+      "description": "The code does not check if the user is authorized to cancel the order, which could lead to IDOR vulnerabilities.",
+      "recommendation": null,
+      "line": 9
+    },
+    {
+      "id": "F-003",
+      "title": "Potential Resource Leak",
+      "severity": "low",
+      "line_content": "while (status === 'pending') {",
+      "suggestion": "Add a timeout or a maximum number of retries to prevent the loop from running indefinitely, e.g., `const maxRetries = 10; let retries = 0; while (status === 'pending' && retries < maxRetries) { ... }`",
+      "category": "security",
+      "description": "The pollOrderStatus function uses a while loop with a sleep function, which could potentially lead to a resource leak if the loop runs indefinitely.",
+      "recommendation": null,
+      "line": 17
+    },
+    {
+      "id": "F-004",
+      "title": "Hardcoded User ID",
+      "severity": "medium",
+      "line_content": "await cancelOrder(id, 'system');",
+      "suggestion": "Use a secure and configurable way to specify the system user ID, e.g., `const systemUserId = process.env.SYSTEM_USER_ID;`",
+      "category": "security",
+      "description": "The 'system' user ID is hardcoded, which could be a security risk if the system user ID is not properly secured.",
+      "recommendation": null,
+      "line": 25
+    },
+    {
+      "id": "F-005",
+      "title": "Missing Input Validation",
+      "severity": "low",
+      "line_content": "const discounts: any = { SAVE10: 0.1, SAVE20: 0.2, SAVE50: 0.5 };",
+      "suggestion": "Add input validation to ensure the discountCode is a valid and authorized discount code, e.g., `if (!isValidDiscountCode(discountCode)) { throw new Error('Invalid discount code'); }`",
+      "category": "security",
+      "description": "The discountCode parameter is not validated, which could lead to potential issues if an invalid discount code is provided.",
+      "recommendation": null,
+      "line": 29
+    },
+    {
+      "id": "F-006",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "performance",
+      "description": "N+1 queries in bulkCancelOrders function",
+      "recommendation": "Use Promise.all and IN clause to fetch orders in bulk",
+      "line": 21
+    },
+    {
+      "id": "F-007",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "performance",
+      "description": "Infinite polling loop in pollOrderStatus function",
+      "recommendation": "Add a timeout or max-retry condition to prevent infinite loop",
+      "line": 13
+    },
+    {
+      "id": "F-008",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Missing null/undefined checks in cancelOrder function",
+      "recommendation": null,
+      "line": 3
+    },
+    {
+      "id": "F-009",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Missing null/undefined checks in pollOrderStatus function",
+      "recommendation": null,
+      "line": 11
+    },
+    {
+      "id": "F-010",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Incorrect error handling in cancelOrder function",
+      "recommendation": null,
+      "line": 5
+    },
+    {
+      "id": "F-011",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Incorrect error handling in pollOrderStatus function",
+      "recommendation": null,
+      "line": 14
+    },
+    {
+      "id": "F-012",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Missing input validation in cancelOrder function",
+      "recommendation": null,
+      "line": 2
+    },
+    {
+      "id": "F-013",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Missing input validation in pollOrderStatus function",
+      "recommendation": null,
+      "line": 10
+    },
+    {
+      "id": "F-014",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Missing input validation in bulkCancelOrders function",
+      "recommendation": null,
+      "line": 20
+    },
+    {
+      "id": "F-015",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Potential race condition in pollOrderStatus function",
+      "recommendation": null,
+      "line": 12
+    },
+    {
+      "id": "F-016",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Undefined variable reference in calculateDiscount function",
+      "recommendation": null,
+      "line": 26
+    },
+    {
+      "id": "F-017",
+      "title": null,
+      "severity": null,
+      "line_content": null,
+      "suggestion": null,
+      "category": "correctness",
+      "description": "Silent failure in calculateDiscount function",
+      "recommendation": null,
+      "line": 27
+    }
+  ],
+  "positive_observations": [
+    "Code is structured into focused, single-responsibility functions",
+    "Error handling is present in several paths",
+    "Naming conventions are generally consistent"
+  ],
+  "missing_tests": [],
+  "agent_findings_count": {
+    "security": 5,
+    "performance": 3,
+    "correctness": 10,
+    "style": 4,
+    "test_coverage": 16
+  },
+  "processing_time_ms": 23591
+}
